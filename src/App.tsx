@@ -19,6 +19,7 @@ import AdminFormations from './pages/admin/FormationsAdmin'
 import AdminLeads from './pages/admin/LeadsAdmin'
 import AdminReports from './pages/admin/ReportsAdmin'
 import AdminAds from './pages/admin/AdsAdmin'
+import AdminSettings from './pages/admin/SettingsAdmin'
 import AdminLogin from './pages/admin/Login'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="leads" element={<AdminLeads />} />
           <Route path="reports" element={<AdminReports />} />
           <Route path="ads" element={<AdminAds />} />
+          <Route path="parametres" element={<AdminSettings />} />
         </Route>
       </Routes>
     </BrowserRouter>

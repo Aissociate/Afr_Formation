@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { cn } from '../../lib/utils'
 import {
   LayoutDashboard, FileText, GraduationCap, Users,
-  FileBarChart, Megaphone, LogOut, Menu, X, ExternalLink
+  FileBarChart, Megaphone, LogOut, Menu, X, ExternalLink, Settings
 } from 'lucide-react'
 
 const adminNav = [
@@ -14,6 +14,7 @@ const adminNav = [
   { label: 'Prospects', href: '/admin/leads', icon: Users },
   { label: 'Rapports PFI', href: '/admin/reports', icon: FileBarChart },
   { label: 'Publicités IA', href: '/admin/ads', icon: Megaphone },
+  { label: 'Paramètres', href: '/admin/parametres', icon: Settings },
 ]
 
 export default function AdminLayout() {
