@@ -166,14 +166,22 @@ export default function ReportsAdmin() {
   )
 }
 
-type PfiFormation = { titre: string; justification: string; duree?: string; prix?: string; priorite?: string }
-type PfiFinancement = { nom: string; description: string; montant?: string; demarches?: string }
+type PfiFormation = { titre: string; justification: string; adaptation?: string; duree?: string; prix?: string; priorite?: string }
+type PfiFinancement = { nom: string; description: string; probabilite?: string; montant?: string; reste_a_charge?: string; demarches?: string }
+type PfiPlanFinancement = { financeur_probable?: string; justification?: string; reste_a_charge_estime?: string }
 type PfiData = {
   introduction?: string
   formations_recommandees?: PfiFormation[]
+  plan_financement?: PfiPlanFinancement
   financements?: PfiFinancement[]
   prochaines_etapes?: string
   note_conseiller?: string
+}
+
+const PROBA_COLORS: Record<string, string> = {
+  élevée: 'bg-emerald-100 text-emerald-700',
+  moyenne: 'bg-amber-100 text-amber-700',
+  faible: 'bg-neutral-100 text-neutral-500',
 }
 
 function PfiContent({ data }: { data: Record<string, unknown> }) {
@@ -194,23 +202,59 @@ function PfiContent({ data }: { data: Record<string, unknown> }) {
               <div key={i} className="bg-brand-50 border border-brand-100 rounded-xl p-4">
                 <div className="font-semibold text-brand-900">{f.titre}</div>
                 <p className="text-neutral-600 text-xs mt-1">{f.justification}</p>
-                {f.duree && <div className="text-xs text-neutral-400 mt-1">Durée : {f.duree}</div>}
+                {f.adaptation && (
+                  <p className="text-neutral-700 text-xs mt-2 bg-white/60 rounded-lg px-2.5 py-1.5">
+                    <span className="font-semibold text-brand-700">Sur mesure : </span>{f.adaptation}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-3 mt-2 text-xs text-neutral-400">
+                  {f.duree && <span>Durée : {f.duree}</span>}
+                  {f.prix && <span>Prix : {f.prix}</span>}
+                  {f.priorite && <span>Priorité : {f.priorite}</span>}
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
+      {d.plan_financement?.financeur_probable && (
+        <div>
+          <h3 className="font-bold text-neutral-900 mb-2">Financeur le plus probable</h3>
+          <div className="bg-emerald-600/5 border border-emerald-200 rounded-xl p-4">
+            <div className="font-semibold text-emerald-900">{d.plan_financement.financeur_probable}</div>
+            {d.plan_financement.justification && (
+              <p className="text-neutral-600 text-xs mt-1">{d.plan_financement.justification}</p>
+            )}
+            {d.plan_financement.reste_a_charge_estime && (
+              <div className="text-xs text-emerald-700 font-medium mt-1.5">
+                Reste à charge estimé : {d.plan_financement.reste_a_charge_estime}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {d.financements && d.financements.length > 0 && (
         <div>
-          <h3 className="font-bold text-neutral-900 mb-3">Dispositifs de financement identifiés</h3>
+          <h3 className="font-bold text-neutral-900 mb-3">Plan de financement détaillé</h3>
           <div className="space-y-2">
             {d.financements.map((f, i) => (
               <div key={i} className="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl">
                 <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <div>
-                  <div className="font-semibold text-emerald-900 text-sm">{f.nom}</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-emerald-900 text-sm">{f.nom}</span>
+                    {f.probabilite && (
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${PROBA_COLORS[f.probabilite] ?? PROBA_COLORS.faible}`}>
+                        {f.probabilite}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-neutral-600 text-xs mt-0.5">{f.description}</p>
-                  {f.montant && <div className="text-xs text-emerald-700 font-medium mt-1">Montant max : {f.montant}</div>}
+                  <div className="flex flex-wrap gap-3 mt-1 text-xs">
+                    {f.montant && <span className="text-emerald-700 font-medium">Montant : {f.montant}</span>}
+                    {f.reste_a_charge && <span className="text-neutral-500">Reste à charge : {f.reste_a_charge}</span>}
+                  </div>
+                  {f.demarches && <p className="text-neutral-500 text-xs mt-1">Démarches : {f.demarches}</p>}
                 </div>
               </div>
             ))}
@@ -221,6 +265,12 @@ function PfiContent({ data }: { data: Record<string, unknown> }) {
         <div>
           <h3 className="font-bold text-neutral-900 mb-2">Prochaines étapes</h3>
           <p className="text-neutral-600 leading-relaxed">{d.prochaines_etapes}</p>
+        </div>
+      )}
+      {d.note_conseiller && (
+        <div>
+          <h3 className="font-bold text-neutral-900 mb-2">Note du conseiller</h3>
+          <p className="text-neutral-600 leading-relaxed italic">{d.note_conseiller}</p>
         </div>
       )}
     </div>

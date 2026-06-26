@@ -59,7 +59,7 @@ const PROMPTS: { key: 'prompt_blog' | 'prompt_ads' | 'prompt_pfi'; label: string
     label: 'Génération de PFI',
     icon: FileBarChart,
     desc: 'Plan de Formation Individualisé (Rapports PFI).',
-    vars: ['nom', 'localite', 'situation_pro', 'domaine_interesse', 'objectif_formation', 'disponibilite', 'financement_connu', 'formations_catalogue', 'financements_disponibles'],
+    vars: ['nom', 'localite', 'situation_pro', 'situation_emploi', 'niveau_etudes', 'revenus_foyer', 'domaine_interesse', 'objectif_formation', 'disponibilite', 'financement_connu', 'commentaires', 'formations_catalogue', 'financements_disponibles'],
   },
 ]
 

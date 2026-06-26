@@ -77,9 +77,16 @@ export default function Questionnaire() {
     setSubmitting(true)
     setError('')
 
-    const { data: leadData, error: leadErr } = await supabase
+    // On génère l'id côté client : la table `leads` n'a pas de policy SELECT
+    // publique, donc un `.insert().select()` (INSERT ... RETURNING) serait
+    // filtré par RLS et renverrait une ligne vide. En fournissant l'id, on
+    // n'a plus besoin du RETURNING pour enchaîner sur le questionnaire.
+    const leadId = crypto.randomUUID()
+
+    const { error: leadErr } = await supabase
       .from('leads')
       .insert({
+        id: leadId,
         nom: (formData.prenom as string) ?? 'Non renseigné',
         prenom: formData.prenom as string,
         email: formData.email as string,
@@ -88,23 +95,29 @@ export default function Questionnaire() {
         situation_pro: (formData.situation_emploi as string) || null,
         source: 'questionnaire',
       })
-      .select('id')
-      .single()
 
-    if (leadErr || !leadData) {
+    if (leadErr) {
+      console.error('Erreur insertion lead:', leadErr)
       setError('Une erreur est survenue. Veuillez réessayer.')
       setSubmitting(false)
       return
     }
 
-    await supabase.from('questionnaire_responses').insert({
-      lead_id: leadData.id,
+    const { error: qErr } = await supabase.from('questionnaire_responses').insert({
+      lead_id: leadId,
       objectif_formation: (formData.objectif_formation as string) || null,
       domaine_interesse: (formData.domaine_interesse as string) || null,
       situation_emploi: (formData.situation_emploi as string) || null,
       financement_connu: (formData.financement_connu as string[]) || null,
       disponibilite: (formData.disponibilite as string) || null,
     })
+
+    if (qErr) {
+      console.error('Erreur insertion questionnaire:', qErr)
+      setError('Une erreur est survenue. Veuillez réessayer.')
+      setSubmitting(false)
+      return
+    }
 
     setSubmitting(false)
     setDone(true)
