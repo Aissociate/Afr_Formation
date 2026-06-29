@@ -146,6 +146,11 @@ export default function LeadsAdmin() {
                 {[
                   ['Email', selected.email],
                   ['Téléphone', selected.telephone ?? '—'],
+                  ['Type', selected.type_client ?? '—'],
+                  ['Formation / Produit', selected.formation_produit ?? '—'],
+                  ['Adresse', selected.adresse ?? '—'],
+                  ['Représentant', selected.representant ?? '—'],
+                  ['Fonction représentant', selected.fonction_representant ?? '—'],
                   ['Localité', selected.localite ?? '—'],
                   ['Situation', selected.situation_pro ?? '—'],
                   ['Source', selected.source],

@@ -6,7 +6,8 @@ import { cn } from '../../lib/utils'
 
 type EditState = Partial<Formation> & { isNew?: boolean }
 
-const CATEGORIES = ['Numérique', 'Bureautique', 'Marketing', 'Gestion', 'Entrepreneuriat', 'Développement personnel']
+const CATEGORIES = ['Comptabilité & Gestion', 'Ressources Humaines & Paie', 'Assistanat & Direction', 'Formation & Insertion', 'Management']
+const NIVEAUX = ['Bac (niveau 4)', 'Bac+2 (niveau 5)', 'Tous niveaux']
 
 export default function FormationsAdmin() {
   const [items, setItems] = useState<Formation[]>([])
@@ -22,7 +23,7 @@ export default function FormationsAdmin() {
 
   useEffect(() => { load() }, [])
 
-  const startNew = () => setEditing({ isNew: true, title: '', slug: '', niveau: 'Tous niveaux', is_published: true, categorie: 'Numérique' })
+  const startNew = () => setEditing({ isNew: true, title: '', slug: '', niveau: 'Bac+2 (niveau 5)', is_published: true, categorie: 'Comptabilité & Gestion' })
 
   const handleSave = async () => {
     if (!editing) return
@@ -80,7 +81,7 @@ export default function FormationsAdmin() {
             <label className="block text-sm font-medium text-neutral-700 mb-1.5">Niveau</label>
             <select value={editing.niveau ?? ''} onChange={e => setEditing({ ...editing, niveau: e.target.value })}
               className="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:border-brand-400 text-sm bg-white">
-              {['Débutant', 'Intermédiaire', 'Avancé', 'Tous niveaux'].map(n => <option key={n}>{n}</option>)}
+              {NIVEAUX.map(n => <option key={n}>{n}</option>)}
             </select>
           </div>
           <div>

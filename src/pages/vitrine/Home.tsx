@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, CheckCircle, ChevronRight, Zap, Map, BookOpen, Award, Users, Star } from 'lucide-react'
 import { supabase, type Formation } from '../../lib/supabase'
+import { QUALIOPI_CERT_URL, QUALIOPI_LOGO } from '../../lib/config'
 
 const pillars = [
   {
@@ -28,22 +29,22 @@ const pillars = [
 
 const domains = [
   {
-    title: 'Gestion, Comptabilité & Finance',
-    formations: ['Comptable Assistant(e)', 'Gestionnaire de Paie'],
+    title: 'Comptabilité & Gestion',
+    formations: ['TP Secrétaire Comptable', 'TP Gestionnaire Comptable et Fiscal'],
     img: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=600',
-    slug: 'comptable-assistant',
+    slug: 'tp-gestionnaire-comptable-fiscal',
   },
   {
-    title: 'Commerce, Vente & Distribution',
-    formations: ['Conseiller(ère) de Vente', 'Manager d\'Unité Marchande'],
+    title: 'Ressources Humaines & Paie',
+    formations: ['TP Assistant(e) Ressources Humaines', 'TP Gestionnaire de Paie'],
     img: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600',
-    slug: 'conseiller-vente',
+    slug: 'tp-gestionnaire-de-paie',
   },
   {
     title: 'Formation & Insertion',
-    formations: ['Formateur(trice) Professionnel(le) d\'Adultes', 'Conseiller(ère) en Insertion Professionnelle'],
+    formations: ['TP Formateur Professionnel d\'Adultes', 'TP Conseiller(ère) en Insertion Professionnelle'],
     img: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=600',
-    slug: 'formateur-professionnel-adultes',
+    slug: 'tp-formateur-professionnel-adultes',
   },
 ]
 
@@ -68,7 +69,7 @@ const testimonials = [
 const steps = [
   { num: '01', title: 'Remplissez le questionnaire', desc: 'Quelques questions sur votre situation, vos objectifs et votre disponibilité.' },
   { num: '02', title: 'Analyse IA de votre profil', desc: 'Notre IA identifie la formation et le financement adaptés à votre situation.' },
-  { num: '03', title: 'Recevez votre PFI', desc: 'Un Plan de Formation Individualisé complet, gratuit, prêt à soumettre à votre OPCO ou Pôle Emploi.' },
+  { num: '03', title: 'Recevez votre PFI', desc: 'Un Plan de Formation Individualisé complet, gratuit, prêt à soumettre à votre OPCO ou à France Travail.' },
   { num: '04', title: 'Démarrez votre parcours', desc: 'Accédez à la plateforme et progressez à votre rythme, partout à La Réunion.' },
 ]
 
@@ -87,8 +88,8 @@ export default function Home() {
       <section className="relative min-h-screen bg-dark-900 flex items-center overflow-hidden">
         {/* Background layers */}
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)', backgroundSize: '36px 36px' }} />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(72,154,48,0.2),transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(240,124,32,0.08),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.2),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(20,184,166,0.1),transparent_55%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -123,7 +124,7 @@ export default function Home() {
 
             {/* Trust badges */}
             <div className="flex flex-wrap gap-4">
-              {['Titres Professionnels du Ministère du Travail', 'Éligible CPF & OPCO', 'Présentiel · Distanciel · Mixte'].map(badge => (
+              {['Titres Professionnels du Ministère du Travail', 'Financement OPCO · France Travail · Région', 'Présentiel · Distanciel · Mixte'].map(badge => (
                 <div key={badge} className="flex items-center gap-2 text-neutral-400 text-xs">
                   <CheckCircle className="w-3.5 h-3.5 text-brand-500 shrink-0" />
                   {badge}
@@ -135,9 +136,9 @@ export default function Home() {
           {/* Stats panel */}
           <div className="hidden lg:grid grid-cols-2 gap-4">
             {[
-              { value: '16', label: 'Formations certifiantes', sub: 'Titres Professionnels reconnus État' },
-              { value: '6', label: 'Domaines métiers', sub: 'Commerce · RH · Médico-social…' },
-              { value: 'CPF', label: 'Financement', sub: 'Zéro reste à charge possible' },
+              { value: '8', label: 'Titres Professionnels', sub: 'Certifications reconnues par l\'État' },
+              { value: '5', label: 'Domaines métiers', sub: 'Compta · RH · Paie · Admin · Insertion' },
+              { value: 'OPCO', label: 'Financements', sub: 'OPCO · France Travail · Région' },
               { value: '100%', label: 'Flexible', sub: 'À votre rythme, où que vous soyez' },
             ].map(s => (
               <div key={s.value} className="bg-white/5 border border-white/8 rounded-2xl p-5 hover:border-brand-500/30 transition-colors">
@@ -226,7 +227,7 @@ export default function Home() {
                 Des parcours qui<br className="hidden sm:block" /> changent tout.
               </h2>
               <p className="text-neutral-500 text-sm mt-3 max-w-md leading-relaxed">
-                Titres Professionnels du Ministère du Travail — certifiants, finançables CPF/OPCO, accessibles depuis toute La Réunion.
+                Titres Professionnels du Ministère du Travail — certifiants, finançables (OPCO, France Travail, Région), accessibles depuis toute La Réunion.
               </p>
             </div>
             <Link to="/formations" className="inline-flex items-center gap-2 text-brand-600 font-semibold hover:gap-3 transition-all text-sm shrink-0">
@@ -267,23 +268,30 @@ export default function Home() {
           </div>
 
           {/* Highlight banner */}
-          <div className="mt-10 rounded-2xl bg-neutral-50 border border-neutral-100 p-8 flex flex-col sm:flex-row items-center gap-6 justify-between">
-            <div className="flex items-center gap-4">
+          <div className="mt-10 rounded-2xl bg-neutral-50 border border-neutral-100 p-8 flex flex-col lg:flex-row items-center gap-6 justify-between">
+            <div className="flex items-center gap-5">
               <img
                 src="https://img.over-blog-kiwi.com/1/40/67/00/20200317/ob_e8c10c_1200px-logo-du-ministere-du-travail.png"
                 alt="Ministère du Travail"
-                className="h-10 object-contain opacity-80"
+                className="h-16 object-contain"
               />
+              <a href={QUALIOPI_CERT_URL} target="_blank" rel="noopener noreferrer" title="Voir le certificat Qualiopi">
+                <img
+                  src={QUALIOPI_LOGO}
+                  alt="Certification Qualiopi"
+                  className="h-16 object-contain hover:opacity-80 transition-opacity"
+                />
+              </a>
               <div>
                 <div className="font-bold text-neutral-900 text-sm">Certifications reconnues par l'État</div>
-                <div className="text-neutral-500 text-xs mt-0.5">Titres Professionnels du Ministère du Travail · 6 domaines métiers</div>
+                <div className="text-neutral-500 text-xs mt-0.5">Titres Professionnels du Ministère du Travail · Organisme certifié Qualiopi</div>
               </div>
             </div>
             <Link
               to="/formations"
               className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-dark-800 hover:bg-dark-700 text-white font-semibold rounded-xl transition-colors text-sm"
             >
-              Voir les 16 formations <ArrowRight className="w-4 h-4" />
+              Voir les 8 formations <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -314,8 +322,8 @@ export default function Home() {
                       <span>{f.niveau}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
-                        <CheckCircle className="w-3.5 h-3.5" /> Éligible CPF
+                      <div className="flex items-center gap-1.5 text-xs text-teal-600 font-medium">
+                        <CheckCircle className="w-3.5 h-3.5" /> Financement possible
                       </div>
                       <span className="text-brand-600 text-xs font-semibold flex items-center gap-1">
                         En savoir plus <ChevronRight className="w-3.5 h-3.5" />
@@ -357,7 +365,7 @@ export default function Home() {
 
       {/* ─── CTA FINAL ─────────────────────────────────────────────────── */}
       <section className="py-20 bg-dark-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(72,154,48,0.14),transparent_65%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.14),transparent_65%)]" />
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)', backgroundSize: '36px 36px' }} />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-600/15 border border-brand-600/25 rounded-full text-brand-400 text-xs font-semibold mb-6">

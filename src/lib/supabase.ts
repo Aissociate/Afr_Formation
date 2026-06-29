@@ -58,6 +58,11 @@ export type Lead = {
   source: string
   status: string
   notes: string | null
+  type_client: string | null
+  adresse: string | null
+  formation_produit: string | null
+  representant: string | null
+  fonction_representant: string | null
   created_at: string
   updated_at: string
 }

@@ -48,22 +48,22 @@ export default function Formations() {
       {/* Hero */}
       <section className="bg-dark-900 pt-24 pb-16 relative overflow-hidden">
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)', backgroundSize: '36px 36px' }} />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(72,154,48,0.14),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.16),transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="inline-block text-brand-500 text-xs font-semibold tracking-widest uppercase mb-4 border-b-2 border-brand-500 pb-1">Catalogue</div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 mt-1">Nos formations certifiantes</h1>
           <p className="text-neutral-400 max-w-xl mb-3 leading-relaxed">
-            Titres Professionnels du Ministère du Travail · Hybrides · Finançables CPF/OPCO · Accessibles partout à La Réunion
+            Titres Professionnels du Ministère du Travail · Hybrides · Finançables (OPCO, France Travail, Région) · Accessibles partout à La Réunion
           </p>
 
           <div className="flex items-center gap-3 mt-4 mb-8">
             <div className="flex items-center gap-1.5 text-xs text-neutral-400 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
               <Award className="w-3.5 h-3.5 text-brand-500" />
-              16 Titres Professionnels reconnus État
+              8 Titres Professionnels reconnus État
             </div>
             <div className="flex items-center gap-1.5 text-xs text-neutral-400 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-              Éligible CPF & OPCO
+              <CheckCircle className="w-3.5 h-3.5 text-teal-400" />
+              Financement OPCO · France Travail · Région
             </div>
           </div>
 
@@ -156,8 +156,8 @@ export default function Formations() {
                       <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{f.duree}</span>
                     </div>
                     <div className="flex items-center justify-between pt-3 border-t border-neutral-50">
-                      <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
-                        <CheckCircle className="w-3.5 h-3.5" /> Éligible CPF
+                      <div className="flex items-center gap-1.5 text-xs text-teal-600 font-medium">
+                        <CheckCircle className="w-3.5 h-3.5" /> Financement possible
                       </div>
                       <span className="text-brand-600 text-xs font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                         En savoir plus <ChevronRight className="w-3.5 h-3.5" />
@@ -171,10 +171,10 @@ export default function Formations() {
 
           {/* CTA */}
           <div className="mt-16 bg-dark-900 rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,rgba(234,54,12,0.12),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,rgba(20,184,166,0.14),transparent_60%)]" />
             <div className="relative">
               <h3 className="text-white font-bold text-xl mb-1">Pas sûr de votre financement ?</h3>
-              <p className="text-neutral-400 text-sm leading-relaxed">Notre IA identifie le dispositif adapté à votre situation en quelques minutes — CPF, OPCO, AIF, CSP…</p>
+              <p className="text-neutral-400 text-sm leading-relaxed">Notre IA identifie le dispositif adapté à votre situation en quelques minutes — OPCO, France Travail (AIF), Région, CSP…</p>
             </div>
             <Link
               to="/questionnaire"

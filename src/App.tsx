@@ -12,6 +12,7 @@ import Blog from './pages/vitrine/Blog'
 import BlogPostPage from './pages/vitrine/BlogPostPage'
 import Contact from './pages/vitrine/Contact'
 import Questionnaire from './pages/vitrine/Questionnaire'
+import Devis from './pages/vitrine/Devis'
 
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminBlog from './pages/admin/BlogAdmin'
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/questionnaire" element={<Questionnaire />} />
+          <Route path="/devis" element={<Devis />} />
         </Route>
 
         {/* Admin */}

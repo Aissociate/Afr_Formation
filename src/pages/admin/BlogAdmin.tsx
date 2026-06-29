@@ -167,7 +167,7 @@ export default function BlogAdmin() {
                   value={(editing.tags ?? []).join(', ')}
                   onChange={e => setEditing({ ...editing, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
                   className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-xs focus:outline-none focus:border-brand-400"
-                  placeholder="formation, CPF, Réunion"
+                  placeholder="formation, titre professionnel, Réunion"
                 />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">

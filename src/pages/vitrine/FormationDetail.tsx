@@ -54,7 +54,7 @@ export default function FormationDetail() {
       {/* Hero */}
       <section className="relative bg-dark-900 pt-24 pb-0 overflow-hidden">
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)', backgroundSize: '36px 36px' }} />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(72,154,48,0.12),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.14),transparent_55%)]" />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pb-12">
           <Link to="/formations" className="inline-flex items-center gap-2 text-neutral-400 hover:text-white text-sm mb-8 transition-colors group">
@@ -80,8 +80,8 @@ export default function FormationDetail() {
                 <div className="flex items-center gap-2 text-sm text-neutral-300 bg-white/5 border border-white/8 rounded-full px-4 py-2">
                   <Award className="w-4 h-4 text-brand-400" />{formation.niveau}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 rounded-full px-4 py-2">
-                  <CheckCircle className="w-4 h-4" />Éligible CPF
+                <div className="flex items-center gap-2 text-sm text-teal-300 bg-teal-400/10 border border-teal-400/20 rounded-full px-4 py-2">
+                  <CheckCircle className="w-4 h-4" />Financement possible
                 </div>
               </div>
             </div>
@@ -171,7 +171,7 @@ export default function FormationDetail() {
               {formation.prix && (
                 <div className="text-3xl font-bold text-white mb-1">{formation.prix.toLocaleString('fr-FR')} €</div>
               )}
-              <div className="text-emerald-400 text-xs font-medium mb-6">Finançable à 100% — CPF, OPCO, AIF, CSP…</div>
+              <div className="text-teal-300 text-xs font-medium mb-6">Financement possible — OPCO, France Travail (AIF), Région, CSP…</div>
 
               <Link
                 to="/questionnaire"

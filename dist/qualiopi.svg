@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 90" role="img" aria-label="Qualiopi">
+  <rect x="1" y="1" width="218" height="88" rx="10" fill="#ffffff" stroke="#1f3b8f" stroke-width="2"/>
+  <circle cx="42" cy="45" r="24" fill="none" stroke="#1f3b8f" stroke-width="5"/>
+  <path d="M31 45 l8 9 l16 -19" fill="none" stroke="#e2001a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="80" y="40" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#1f3b8f">Qualiopi</text>
+  <text x="80" y="60" font-family="Arial, sans-serif" font-size="9" fill="#555">Certification qualité</text>
+  <text x="80" y="72" font-family="Arial, sans-serif" font-size="7.5" fill="#888">Logo provisoire — à remplacer</text>
+</svg>

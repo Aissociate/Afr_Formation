@@ -43,13 +43,14 @@ Ta mission : construire un Plan de Formation Individualisé (PFI) SUR MESURE pou
 - N'invente jamais une formation absente du catalogue.
 
 ## RÈGLES DE DÉTERMINATION DU FINANCEUR PROBABLE (France / La Réunion)
+IMPORTANT : les formations d'AFR ne sont PAS éligibles au financement CPF. Ne propose JAMAIS le CPF, même si le prospect le cite. Si le prospect mentionne le CPF, explique poliment que ces titres ne sont pas finançables par CPF et oriente-le vers les dispositifs adaptés ci-dessous.
 Déduis le financeur le PLUS PROBABLE à partir du statut d'emploi :
-- Salarié du privé → OPCO (via l'employeur) ou Plan de développement des compétences ; CPF mobilisable en complément. En cas de reconversion → Transitions Pro (Projet de Transition Professionnelle).
-- Demandeur d'emploi / sans emploi → France Travail (AIF) en priorité, puis Région Réunion ; CPF mobilisable (souvent sans reste à charge pour les demandeurs d'emploi).
-- Indépendant / auto-entrepreneur / profession libérale → Fonds d'assurance formation (FIFPL, AGEFICE selon l'activité) ; CPF en complément.
-- Agent public → plan de formation de l'employeur / administration ; CPF.
-- Étudiant ou statut peu clair → CPF si des droits sont acquis, sinon Région Réunion ou autofinancement.
-Prends en compte les financements déjà cités par le prospect, mais corrige-les s'ils sont inadaptés à sa situation réelle.
+- Salarié du privé → OPCO (via l'employeur) ou Plan de développement des compétences. En cas de reconversion → Transitions Pro (Projet de Transition Professionnelle).
+- Demandeur d'emploi / sans emploi → France Travail (AIF) en priorité, puis Région Réunion.
+- Indépendant / auto-entrepreneur / profession libérale → Fonds d'assurance formation (FIFPL, AGEFICE selon l'activité).
+- Agent public → plan de formation de l'employeur / administration.
+- Étudiant ou statut peu clair → Région Réunion ou autofinancement.
+Prends en compte les financements déjà cités par le prospect, mais corrige-les s'ils sont inadaptés à sa situation réelle (et exclus systématiquement le CPF).
 Classe les dispositifs du PLUS au MOINS probable. Pour chacun, indique une probabilité (élevée / moyenne / faible), un montant estimé et un reste à charge estimé.
 
 Génère le PFI au format JSON avec cette structure EXACTE :
@@ -92,3 +93,21 @@ Réponds UNIQUEMENT avec le JSON valide, sans aucun autre texte.$pfi$,
   max_tokens = greatest(max_tokens, 3000),
   updated_at = now()
 where id = 1;
+
+-- Les formations AFR ne sont PAS éligibles au CPF : on retire la mention CPF
+-- du prompt « Publicités » (remplacée par les dispositifs réellement mobilisables).
+update ai_config
+set prompt_ads = replace(
+      prompt_ads,
+      '- Financement CPF possible (zéro reste à charge)',
+      '- Financements mobilisables : OPCO, France Travail (AIF), Région Réunion'
+    ),
+    updated_at = now()
+where id = 1
+  and prompt_ads like '%Financement CPF possible%';
+
+-- Désactive le dispositif CPF dans le catalogue des financements : les titres
+-- proposés par AFR ne sont pas finançables par le CPF.
+update financing_modalities
+set is_active = false
+where name ilike '%cpf%' or name ilike '%compte personnel%';

@@ -2,21 +2,22 @@ import { useState, useEffect } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronRight, Phone, Mail, ExternalLink } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import { QUALIOPI_CERT_URL, QUALIOPI_LOGO } from '../../lib/config'
 
 const navLinks = [
   { label: 'Accueil', href: '/' },
   { label: 'Formations', href: '/formations' },
+  { label: 'Devis', href: '/devis' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
 ]
 
 const footerDomains = [
-  'Commerce, Vente & Distribution',
-  'Gestion, Comptabilité & Finance',
-  'Administratif, Secrétariat & Support',
+  'Comptabilité & Gestion',
   'Ressources Humaines & Paie',
-  'Médico-social & Services à domicile',
-  'Formation, Insertion & Accompagnement',
+  'Assistanat & Direction',
+  'Formation & Insertion',
+  'Management',
 ]
 
 export default function PublicLayout() {
@@ -51,10 +52,10 @@ export default function PublicLayout() {
             <img
               src="/image.png"
               alt="AFR Formation"
-              className="h-10 w-10 object-contain rounded-lg bg-white/5 p-0.5"
+              className="h-14 w-14 object-contain rounded-lg bg-white/5 p-0.5"
             />
             <div className="leading-none">
-              <div className="text-white font-bold text-sm tracking-wide">AFR Formation</div>
+              <div className="text-white font-bold text-base tracking-wide">AFR Formation</div>
               <div className="text-neutral-400 text-[10px] tracking-wider uppercase">Accompagnement · Réussite</div>
             </div>
           </Link>
@@ -132,9 +133,9 @@ export default function PublicLayout() {
             {/* Brand column */}
             <div className="md:col-span-4">
               <div className="flex items-center gap-3 mb-4">
-                <img src="/image.png" alt="AFR" className="h-11 w-11 object-contain rounded-xl bg-white/5 p-0.5" />
+                <img src="/image.png" alt="AFR" className="h-16 w-16 object-contain rounded-xl bg-white/5 p-0.5" />
                 <div>
-                  <div className="text-white font-bold text-sm">AFR Formation</div>
+                  <div className="text-white font-bold text-base">AFR Formation</div>
                   <div className="text-neutral-500 text-[10px] tracking-wider uppercase">Accompagnement · Réussite</div>
                 </div>
               </div>
@@ -172,6 +173,24 @@ export default function PublicLayout() {
                 >
                   <ExternalLink className="w-3 h-3" /> LinkedIn
                 </a>
+              </div>
+
+              {/* Certifications */}
+              <div className="mt-6 flex items-center gap-4">
+                <a
+                  href={QUALIOPI_CERT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Voir le certificat Qualiopi"
+                  className="bg-white rounded-lg p-2 hover:opacity-90 transition-opacity"
+                >
+                  <img src={QUALIOPI_LOGO} alt="Certification Qualiopi" className="h-12 object-contain" />
+                </a>
+                <img
+                  src="https://img.over-blog-kiwi.com/1/40/67/00/20200317/ob_e8c10c_1200px-logo-du-ministere-du-travail.png"
+                  alt="Ministère du Travail"
+                  className="h-12 object-contain bg-white rounded-lg p-2"
+                />
               </div>
             </div>
 

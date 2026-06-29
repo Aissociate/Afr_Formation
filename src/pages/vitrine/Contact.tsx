@@ -30,7 +30,7 @@ export default function Contact() {
       {/* Hero */}
       <section className="bg-dark-900 pt-24 pb-16 relative overflow-hidden">
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)', backgroundSize: '36px 36px' }} />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(72,154,48,0.12),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.14),transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="inline-block text-brand-500 text-xs font-semibold tracking-widest uppercase mb-4 border-b-2 border-brand-500 pb-1">Contact</div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 mt-1">Parlons de votre objectif.</h1>
