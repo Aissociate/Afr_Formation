@@ -1,12 +1,8 @@
 // Constantes de configuration éditoriale du site.
 // Centralise les liens externes pour les changer en un seul endroit.
 
-/**
- * Lien vers le certificat Qualiopi (PDF ou page dédiée).
- * TODO: remplacer par l'URL directe du certificat fournie par AFR.
- * Fallback temporaire : le site institutionnel.
- */
-export const QUALIOPI_CERT_URL = 'https://afr-formation.fr/'
+/** Lien vers le certificat Qualiopi (PDF officiel AFR). */
+export const QUALIOPI_CERT_URL = 'https://afr-formation.fr/assets/AFR-QUALIOPI-CERTIFICAT.pdf'
 
 /**
  * Logo Qualiopi affiché sur les boutons/bandeaux.
