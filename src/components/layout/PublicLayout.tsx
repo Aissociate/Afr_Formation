@@ -158,7 +158,7 @@ export default function PublicLayout() {
               </div>
               <div className="flex items-center gap-2">
                 <a
-                  href="https://www.facebook.com/Accompform"
+                  href="https://www.facebook.com/Accompform?locale=fr_FR"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs transition-colors"

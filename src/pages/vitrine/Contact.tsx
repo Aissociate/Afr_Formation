@@ -109,7 +109,7 @@ export default function Contact() {
               <h3 className="text-sm font-semibold text-neutral-900 mb-3">Réseaux sociaux</h3>
               <div className="flex gap-3">
                 <a
-                  href="https://www.facebook.com/Accompform"
+                  href="https://www.facebook.com/Accompform?locale=fr_FR"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2.5 bg-neutral-50 hover:bg-brand-50 border border-neutral-100 hover:border-brand-200 rounded-xl text-sm text-neutral-600 hover:text-brand-600 transition-all"
