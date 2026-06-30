@@ -30,6 +30,7 @@ export type AiConfig = {
   api_key: string;
   model: string;
   image_model: string;
+  image_base_url: string;
   temperature: number;
   max_tokens: number;
   prompt_blog: string;
@@ -43,6 +44,7 @@ const DEFAULTS: AiConfig = {
   api_key: "",
   model: "anthropic/claude-3.5-sonnet",
   image_model: "google/gemini-2.5-flash-image",
+  image_base_url: "https://openrouter.ai/api/v1",
   temperature: 0.7,
   max_tokens: 2000,
   prompt_blog: "",
@@ -139,31 +141,50 @@ export async function generateImage(
   pathPrefix = "ai",
 ): Promise<string | null> {
   if (!cfg.api_key || !cfg.image_model || !prompt.trim()) return null;
-  const base = (cfg.base_url || DEFAULTS.base_url).replace(/\/+$/, "");
+  const base = (cfg.image_base_url || cfg.base_url || DEFAULTS.base_url).replace(/\/+$/, "");
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${cfg.api_key}`,
+    "HTTP-Referer": "https://afr-formation.fr",
+    "X-Title": "AFR OI CFA",
+  };
 
-  let data: unknown;
+  let dataUrl: string | null = null;
+
+  // 1) OpenRouter unified Image API : POST /images -> { data: [{ b64_json }] }.
   try {
-    const res = await fetch(`${base}/chat/completions`, {
+    const res = await fetch(`${base}/images`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${cfg.api_key}`,
-        "HTTP-Referer": "https://afr-formation.fr",
-        "X-Title": "AFR OI CFA",
-      },
-      body: JSON.stringify({
-        model: cfg.image_model,
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
-      }),
+      headers,
+      body: JSON.stringify({ model: cfg.image_model, prompt }),
     });
-    if (!res.ok) return null;
-    data = await res.json();
-  } catch {
-    return null;
+    if (res.ok) {
+      const j = await res.json();
+      const b64 = j?.data?.[0]?.b64_json;
+      if (typeof b64 === "string") {
+        dataUrl = b64.startsWith("data:") ? b64 : `data:image/png;base64,${b64}`;
+      } else {
+        dataUrl = extractImageDataUrl(j);
+      }
+    }
+  } catch { /* fall through to chat modalities */ }
+
+  // 2) Fallback : chat completions with image modality (e.g. Gemini Flash Image).
+  if (!dataUrl) {
+    try {
+      const res = await fetch(`${base}/chat/completions`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          model: cfg.image_model,
+          messages: [{ role: "user", content: prompt }],
+          modalities: ["image", "text"],
+        }),
+      });
+      if (res.ok) dataUrl = extractImageDataUrl(await res.json());
+    } catch { /* give up */ }
   }
 
-  const dataUrl = extractImageDataUrl(data);
   const match = dataUrl?.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
   if (!match) return null;
 

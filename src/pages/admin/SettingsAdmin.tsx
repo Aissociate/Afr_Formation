@@ -11,6 +11,7 @@ type AiConfig = {
   api_key: string
   model: string
   image_model: string
+  image_base_url: string
   temperature: number
   max_tokens: number
   prompt_blog: string
@@ -24,6 +25,7 @@ const DEFAULTS: AiConfig = {
   api_key: '',
   model: 'anthropic/claude-3.5-sonnet',
   image_model: 'google/gemini-2.5-flash-image',
+  image_base_url: 'https://openrouter.ai/api/v1',
   temperature: 0.7,
   max_tokens: 2000,
   prompt_blog: '',
@@ -111,6 +113,7 @@ export default function SettingsAdmin() {
       api_key: form.api_key.trim(),
       model: form.model.trim() || DEFAULTS.model,
       image_model: form.image_model.trim() || DEFAULTS.image_model,
+      image_base_url: form.image_base_url.trim() || DEFAULTS.image_base_url,
       temperature: Number(form.temperature),
       max_tokens: Number(form.max_tokens),
       prompt_blog: form.prompt_blog,
@@ -254,7 +257,7 @@ export default function SettingsAdmin() {
             <datalist id="image-model-suggestions">
               {IMAGE_MODEL_SUGGESTIONS.map(m => <option key={m} value={m} />)}
             </datalist>
-            <p className="text-xs text-neutral-400 mt-1.5">Modèle de génération d'images (couvertures blog, visuels pubs). Même clé API.</p>
+            <p className="text-xs text-neutral-400 mt-1.5">Modèle de génération d'images (couvertures blog, visuels pubs), même clé API. Recommandé : <span className="font-mono text-neutral-500">google/gemini-2.5-flash-image</span>. Évitez <span className="font-mono">openai/dall-e-3</span> (non fiable via OpenRouter).</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-neutral-500 mb-1.5">Température</label>

@@ -3,7 +3,8 @@
 -- les images générées (couvertures de blog, visuels de publicités).
 
 alter table ai_config
-  add column if not exists image_model text not null default 'google/gemini-2.5-flash-image';
+  add column if not exists image_model    text not null default 'google/gemini-2.5-flash-image',
+  add column if not exists image_base_url text not null default 'https://openrouter.ai/api/v1';
 
 -- Bucket public pour les médias générés par l'IA.
 insert into storage.buckets (id, name, public)
