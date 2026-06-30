@@ -43,7 +43,7 @@ const DEFAULTS: AiConfig = {
   base_url: "https://openrouter.ai/api/v1",
   api_key: "",
   model: "anthropic/claude-3.5-sonnet",
-  image_model: "google/gemini-2.5-flash-image",
+  image_model: "x-ai/grok-imagine-image-quality",
   image_base_url: "https://openrouter.ai/api/v1",
   temperature: 0.7,
   max_tokens: 2000,
