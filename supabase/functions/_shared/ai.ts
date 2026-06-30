@@ -29,6 +29,7 @@ export type AiConfig = {
   base_url: string;
   api_key: string;
   model: string;
+  image_model: string;
   temperature: number;
   max_tokens: number;
   prompt_blog: string;
@@ -41,6 +42,7 @@ const DEFAULTS: AiConfig = {
   base_url: "https://openrouter.ai/api/v1",
   api_key: "",
   model: "anthropic/claude-3.5-sonnet",
+  image_model: "google/gemini-2.5-flash-image",
   temperature: 0.7,
   max_tokens: 2000,
   prompt_blog: "",
@@ -101,4 +103,78 @@ export async function callOpenRouter(cfg: AiConfig, prompt: string, maxTokens?: 
   const text: string = data?.choices?.[0]?.message?.content ?? "";
   if (!text) throw new Error("Réponse vide de l'IA.");
   return text;
+}
+
+/** Pull the first base64 image data-URL out of an OpenRouter response. */
+// deno-lint-ignore no-explicit-any
+function extractImageDataUrl(data: any): string | null {
+  const images = data?.choices?.[0]?.message?.images;
+  if (Array.isArray(images)) {
+    for (const img of images) {
+      const url = img?.image_url?.url ?? img?.url;
+      if (typeof url === "string" && url.startsWith("data:image")) return url;
+    }
+  }
+  // Fallback: dedicated images endpoint shape (data[0].b64_json).
+  const b64 = data?.data?.[0]?.b64_json;
+  if (typeof b64 === "string") return `data:image/png;base64,${b64}`;
+  // Fallback: a data URL embedded in the text content.
+  const content = data?.choices?.[0]?.message?.content;
+  if (typeof content === "string") {
+    const m = content.match(/data:image\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=]+/);
+    if (m) return m[0];
+  }
+  return null;
+}
+
+/**
+ * Generate an image via the OpenRouter image model (same API key as text),
+ * upload it to the public `media` Storage bucket and return its public URL.
+ * Returns null on any failure (image generation is best-effort, never fatal).
+ */
+export async function generateImage(
+  cfg: AiConfig,
+  supabase: SupabaseClient,
+  prompt: string,
+  pathPrefix = "ai",
+): Promise<string | null> {
+  if (!cfg.api_key || !cfg.image_model || !prompt.trim()) return null;
+  const base = (cfg.base_url || DEFAULTS.base_url).replace(/\/+$/, "");
+
+  let data: unknown;
+  try {
+    const res = await fetch(`${base}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${cfg.api_key}`,
+        "HTTP-Referer": "https://afr-formation.fr",
+        "X-Title": "AFR OI CFA",
+      },
+      body: JSON.stringify({
+        model: cfg.image_model,
+        messages: [{ role: "user", content: prompt }],
+        modalities: ["image", "text"],
+      }),
+    });
+    if (!res.ok) return null;
+    data = await res.json();
+  } catch {
+    return null;
+  }
+
+  const dataUrl = extractImageDataUrl(data);
+  const match = dataUrl?.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+  if (!match) return null;
+
+  const contentType = match[1];
+  const ext = (contentType.split("/")[1] ?? "png").replace("jpeg", "jpg").replace("svg+xml", "svg");
+  const bytes = Uint8Array.from(atob(match[2]), (c) => c.charCodeAt(0));
+  const path = `${pathPrefix}/${crypto.randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage.from("media").upload(path, bytes, { contentType, upsert: true });
+  if (error) return null;
+
+  const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+  return pub?.publicUrl ?? null;
 }

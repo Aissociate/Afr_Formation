@@ -7,13 +7,14 @@ import {
   renderTemplate,
   callOpenRouter,
   extractJson,
+  generateImage,
 } from "../_shared/ai.ts";
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 200, headers: corsHeaders });
 
   try {
-    const { title, keywords } = await req.json();
+    const { title, keywords, with_image = true } = await req.json();
     if (!title) return jsonResponse({ success: false, error: "title requis" }, 400);
 
     const supabase = serviceClient();
@@ -25,7 +26,7 @@ Deno.serve(async (req: Request) => {
 
     const prompt = renderTemplate(cfg.prompt_blog, {
       title,
-      keywords: keywords || "formation professionnelle, La Réunion, financement CPF, distanciel",
+      keywords: keywords || "formation professionnelle, titre professionnel, La Réunion, distanciel",
     });
 
     const rawText = await callOpenRouter(cfg, prompt);
@@ -37,7 +38,18 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ success: false, error: "Erreur parsing IA: " + rawText.slice(0, 200) }, 500);
     }
 
-    return jsonResponse({ success: true, ...parsed });
+    // Cover image (best-effort: never blocks the article generation).
+    let cover_image: string | null = null;
+    if (with_image) {
+      cover_image = await generateImage(
+        cfg,
+        supabase,
+        `Image de couverture professionnelle et moderne pour un article de blog intitulé "${title}". Thème : formation professionnelle / Titres Professionnels à La Réunion. Style éditorial épuré, lumineux, palette mauve et bleu-vert. Sans aucun texte ni logo.`,
+        "blog",
+      );
+    }
+
+    return jsonResponse({ success: true, ...parsed, cover_image });
   } catch (err) {
     return jsonResponse({ success: false, error: err instanceof Error ? err.message : String(err) }, 500);
   }

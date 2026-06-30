@@ -232,11 +232,22 @@ export default function AdsAdmin() {
                 </div>
               )}
 
+              {/* Generated image */}
+              {Array.isArray(preview.image_urls) && preview.image_urls.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 text-sm font-semibold text-neutral-700 mb-3">
+                    <Image className="w-4 h-4 text-brand-500" /> Visuel généré
+                  </div>
+                  <img src={preview.image_urls[0]} alt="Visuel publicitaire" className="w-full rounded-xl border border-neutral-100" />
+                  <a href={preview.image_urls[0]} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-brand-600 font-medium hover:underline">Ouvrir l'image</a>
+                </div>
+              )}
+
               {/* Image prompt */}
               {preview.image_prompt && (
                 <div>
                   <div className="flex items-center gap-2 text-sm font-semibold text-neutral-700 mb-3">
-                    <Image className="w-4 h-4 text-brand-500" /> Prompt image (DALL·E / Midjourney)
+                    <Image className="w-4 h-4 text-brand-500" /> Prompt image
                   </div>
                   <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
                     <p className="text-neutral-600 text-sm font-mono leading-relaxed">{preview.image_prompt}</p>

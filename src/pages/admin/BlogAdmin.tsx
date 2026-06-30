@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase, type BlogPost } from '../../lib/supabase'
 import { formatDate, slugify } from '../../lib/utils'
-import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Loader2, Wand2 } from 'lucide-react'
+import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Loader2, Wand2, Sparkles, Image as ImageIcon } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 type EditState = Partial<BlogPost> & { isNew?: boolean }
@@ -12,6 +12,9 @@ export default function BlogAdmin() {
   const [editing, setEditing] = useState<EditState | null>(null)
   const [saving, setSaving] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [autoCount, setAutoCount] = useState(3)
+  const [autoBusy, setAutoBusy] = useState(false)
+  const [autoMsg, setAutoMsg] = useState('')
 
   const load = async () => {
     const { data } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false })
@@ -34,6 +37,7 @@ export default function BlogAdmin() {
       slug: editing.slug ?? slugify(editing.title ?? ''),
       excerpt: editing.excerpt,
       content: editing.content,
+      cover_image: editing.cover_image,
       author: editing.author ?? 'AFR OI CFA',
       tags: editing.tags,
       seo_title: editing.seo_title,
@@ -77,6 +81,7 @@ export default function BlogAdmin() {
           ...prev,
           content: data.content ?? prev?.content,
           excerpt: data.excerpt ?? prev?.excerpt,
+          cover_image: data.cover_image ?? prev?.cover_image,
           seo_title: data.seo_title ?? prev?.seo_title,
           seo_description: data.seo_description ?? prev?.seo_description,
         }))
@@ -85,6 +90,54 @@ export default function BlogAdmin() {
       // ignore
     }
     setGenerating(false)
+  }
+
+  // Génère un lot d'articles en brouillon : sujets auto → article + couverture.
+  const generateAuto = async () => {
+    setAutoBusy(true)
+    setAutoMsg('Recherche de sujets…')
+    try {
+      const { data: topicsRes } = await supabase.functions.invoke('suggest-blog-topics', {
+        body: { count: autoCount },
+      })
+      const topics: { title: string; keywords: string }[] = topicsRes?.topics ?? []
+      if (topics.length === 0) {
+        setAutoMsg('Aucun sujet généré. Vérifiez la configuration IA.')
+        setAutoBusy(false)
+        return
+      }
+      let created = 0
+      for (const [i, t] of topics.entries()) {
+        setAutoMsg(`Génération ${i + 1}/${topics.length} : ${t.title}`)
+        const { data } = await supabase.functions.invoke('generate-blog-post', {
+          body: { title: t.title, keywords: t.keywords },
+        })
+        if (!data?.success) continue
+        const tags = (t.keywords || '').split(',').map(s => s.trim()).filter(Boolean)
+        const base = {
+          title: t.title,
+          excerpt: data.excerpt ?? null,
+          content: data.content ?? null,
+          cover_image: data.cover_image ?? null,
+          author: 'AFR OI CFA',
+          tags,
+          seo_title: data.seo_title ?? null,
+          seo_description: data.seo_description ?? null,
+          is_published: false,
+        }
+        // slug unique : on retente avec un suffixe en cas de collision.
+        let { error } = await supabase.from('blog_posts').insert({ ...base, slug: slugify(t.title) })
+        if (error) {
+          await supabase.from('blog_posts').insert({ ...base, slug: `${slugify(t.title)}-${crypto.randomUUID().slice(0, 4)}` })
+        }
+        created++
+      }
+      setAutoMsg(`${created} brouillon(s) créé(s).`)
+      await load()
+    } catch (_) {
+      setAutoMsg('Erreur lors de la génération automatique.')
+    }
+    setAutoBusy(false)
   }
 
   if (editing) {
@@ -145,6 +198,22 @@ export default function BlogAdmin() {
           <div className="space-y-4">
             <div className="bg-neutral-50 rounded-2xl p-4 space-y-4">
               <h3 className="font-semibold text-neutral-900 text-sm">Paramètres</h3>
+              <div>
+                <label className="block text-xs font-medium text-neutral-600 mb-1">Image de couverture</label>
+                {editing.cover_image ? (
+                  <img src={editing.cover_image} alt="" className="w-full h-32 object-cover rounded-lg mb-2 border border-neutral-200" />
+                ) : (
+                  <div className="w-full h-32 rounded-lg mb-2 border border-dashed border-neutral-200 flex items-center justify-center text-neutral-300">
+                    <ImageIcon className="w-6 h-6" />
+                  </div>
+                )}
+                <input
+                  value={editing.cover_image ?? ''}
+                  onChange={e => setEditing({ ...editing, cover_image: e.target.value })}
+                  className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-xs focus:outline-none focus:border-brand-400"
+                  placeholder="URL de l'image (générée automatiquement avec l'IA)"
+                />
+              </div>
               <div>
                 <label className="block text-xs font-medium text-neutral-600 mb-1">Slug (URL)</label>
                 <input
@@ -220,10 +289,35 @@ export default function BlogAdmin() {
           <h1 className="text-2xl font-bold text-neutral-900">Blog</h1>
           <p className="text-neutral-500 text-sm">{posts.length} article{posts.length !== 1 ? 's' : ''}</p>
         </div>
-        <button onClick={startNew} className="flex items-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-colors text-sm">
-          <Plus className="w-4 h-4" /> Nouvel article
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-white border border-neutral-200 rounded-xl pl-3 pr-1.5 py-1">
+            <input
+              type="number" min={1} max={10} value={autoCount}
+              onChange={e => setAutoCount(Math.min(10, Math.max(1, parseInt(e.target.value) || 1)))}
+              className="w-10 text-sm text-center focus:outline-none"
+              title="Nombre d'articles à générer"
+            />
+            <button
+              onClick={generateAuto}
+              disabled={autoBusy}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-warm-400 hover:bg-warm-500 disabled:opacity-50 text-dark-900 font-semibold rounded-lg transition-colors text-sm"
+            >
+              {autoBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              Générer auto
+            </button>
+          </div>
+          <button onClick={startNew} className="flex items-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-colors text-sm">
+            <Plus className="w-4 h-4" /> Nouvel article
+          </button>
+        </div>
       </div>
+
+      {(autoBusy || autoMsg) && (
+        <div className="flex items-center gap-2 text-sm bg-brand-50 text-brand-800 rounded-xl px-4 py-2.5 border border-brand-100">
+          {autoBusy && <Loader2 className="w-4 h-4 animate-spin shrink-0" />}
+          {autoMsg}
+        </div>
+      )}
 
       {loading ? (
         <div className="space-y-3">

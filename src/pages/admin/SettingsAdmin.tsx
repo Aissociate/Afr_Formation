@@ -10,6 +10,7 @@ type AiConfig = {
   base_url: string
   api_key: string
   model: string
+  image_model: string
   temperature: number
   max_tokens: number
   prompt_blog: string
@@ -22,12 +23,19 @@ const DEFAULTS: AiConfig = {
   base_url: 'https://openrouter.ai/api/v1',
   api_key: '',
   model: 'anthropic/claude-3.5-sonnet',
+  image_model: 'google/gemini-2.5-flash-image',
   temperature: 0.7,
   max_tokens: 2000,
   prompt_blog: '',
   prompt_ads: '',
   prompt_pfi: '',
 }
+
+const IMAGE_MODEL_SUGGESTIONS = [
+  'google/gemini-2.5-flash-image',
+  'google/gemini-3-pro-image-preview',
+  'bytedance-seed/seedream-4.5',
+]
 
 const MODEL_SUGGESTIONS = [
   'anthropic/claude-3.5-sonnet',
@@ -102,6 +110,7 @@ export default function SettingsAdmin() {
       base_url: form.base_url.trim() || DEFAULTS.base_url,
       api_key: form.api_key.trim(),
       model: form.model.trim() || DEFAULTS.model,
+      image_model: form.image_model.trim() || DEFAULTS.image_model,
       temperature: Number(form.temperature),
       max_tokens: Number(form.max_tokens),
       prompt_blog: form.prompt_blog,
@@ -230,7 +239,22 @@ export default function SettingsAdmin() {
             <datalist id="model-suggestions">
               {MODEL_SUGGESTIONS.map(m => <option key={m} value={m} />)}
             </datalist>
-            <p className="text-xs text-neutral-400 mt-1.5">Identifiant de modèle OpenRouter (provider/modèle).</p>
+            <p className="text-xs text-neutral-400 mt-1.5">Identifiant de modèle OpenRouter (provider/modèle) — pour le texte (blog, PFI, pubs).</p>
+          </div>
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-medium text-neutral-500 mb-1.5">Modèle image</label>
+            <input
+              list="image-model-suggestions"
+              value={form.image_model}
+              onChange={e => update('image_model', e.target.value)}
+              className={inputCls + ' font-mono'}
+              placeholder="google/gemini-2.5-flash-image"
+              spellCheck={false}
+            />
+            <datalist id="image-model-suggestions">
+              {IMAGE_MODEL_SUGGESTIONS.map(m => <option key={m} value={m} />)}
+            </datalist>
+            <p className="text-xs text-neutral-400 mt-1.5">Modèle de génération d'images (couvertures blog, visuels pubs). Même clé API.</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-neutral-500 mb-1.5">Température</label>

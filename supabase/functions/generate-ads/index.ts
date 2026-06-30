@@ -7,6 +7,7 @@ import {
   renderTemplate,
   callOpenRouter,
   extractJson,
+  generateImage,
 } from "../_shared/ai.ts";
 
 Deno.serve(async (req: Request) => {
@@ -58,6 +59,14 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ success: false, error: "Erreur parsing: " + rawText.slice(0, 200) }, 500);
     }
 
+    // Visuel publicitaire (best-effort) à partir du prompt image généré.
+    const imagePrompt = (parsed.image_prompt as string) ?? "";
+    let imageUrls: string[] = [];
+    if (imagePrompt.trim()) {
+      const url = await generateImage(cfg, supabase, imagePrompt, "ads");
+      if (url) imageUrls = [url];
+    }
+
     const { data: saved, error: saveErr } = await supabase
       .from("ad_campaigns")
       .insert({
@@ -67,7 +76,8 @@ Deno.serve(async (req: Request) => {
         tone,
         platform,
         ad_text_variants: parsed.variantes ?? [],
-        image_prompt: (parsed.image_prompt as string) ?? null,
+        image_prompt: imagePrompt || null,
+        image_urls: imageUrls,
         status: "brouillon",
       })
       .select()
