@@ -24,7 +24,7 @@ const DEFAULTS: AiConfig = {
   base_url: 'https://openrouter.ai/api/v1',
   api_key: '',
   model: 'anthropic/claude-3.5-sonnet',
-  image_model: 'x-ai/grok-imagine-image-quality',
+  image_model: 'bytedance-seed/seedream-4.5',
   image_base_url: 'https://openrouter.ai/api/v1',
   temperature: 0.7,
   max_tokens: 2000,
@@ -34,10 +34,10 @@ const DEFAULTS: AiConfig = {
 }
 
 const IMAGE_MODEL_SUGGESTIONS = [
+  'bytedance-seed/seedream-4.5',
   'x-ai/grok-imagine-image-quality',
   'google/gemini-2.5-flash-image',
   'google/gemini-3-pro-image-preview',
-  'bytedance-seed/seedream-4.5',
 ]
 
 const MODEL_SUGGESTIONS = [
@@ -252,13 +252,13 @@ export default function SettingsAdmin() {
               value={form.image_model}
               onChange={e => update('image_model', e.target.value)}
               className={inputCls + ' font-mono'}
-              placeholder="x-ai/grok-imagine-image-quality"
+              placeholder="bytedance-seed/seedream-4.5"
               spellCheck={false}
             />
             <datalist id="image-model-suggestions">
               {IMAGE_MODEL_SUGGESTIONS.map(m => <option key={m} value={m} />)}
             </datalist>
-            <p className="text-xs text-neutral-400 mt-1.5">Modèle de génération d'images (couvertures blog, visuels pubs), même clé API. Par défaut : <span className="font-mono text-neutral-500">x-ai/grok-imagine-image-quality</span>. Évitez <span className="font-mono">openai/dall-e-3</span> (non fiable via OpenRouter).</p>
+            <p className="text-xs text-neutral-400 mt-1.5">Modèle de génération d'images (couvertures blog, visuels pubs), même clé API. Par défaut : <span className="font-mono text-neutral-500">bytedance-seed/seedream-4.5</span>. Évitez <span className="font-mono">openai/dall-e-3</span> (non fiable via OpenRouter).</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-neutral-500 mb-1.5">Température</label>
