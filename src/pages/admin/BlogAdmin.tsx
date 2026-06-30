@@ -92,14 +92,29 @@ export default function BlogAdmin() {
     setGenerating(false)
   }
 
+  // Extrait le vrai message d'erreur renvoyé par une fonction edge (corps JSON).
+  const fnError = async (error: unknown): Promise<string> => {
+    const e = error as { message?: string; context?: Response }
+    try {
+      const body = await e.context?.clone().json()
+      if (body?.error) return body.error as string
+    } catch (_) { /* ignore */ }
+    return e?.message ?? 'Erreur inconnue'
+  }
+
   // Génère un lot d'articles en brouillon : sujets auto → article + couverture.
   const generateAuto = async () => {
     setAutoBusy(true)
     setAutoMsg('Recherche de sujets…')
     try {
-      const { data: topicsRes } = await supabase.functions.invoke('suggest-blog-topics', {
+      const { data: topicsRes, error: topicsErr } = await supabase.functions.invoke('suggest-blog-topics', {
         body: { count: autoCount },
       })
+      if (topicsErr) {
+        setAutoMsg('Erreur (sujets) : ' + (await fnError(topicsErr)))
+        setAutoBusy(false)
+        return
+      }
       const topics: { title: string; keywords: string }[] = topicsRes?.topics ?? []
       if (topics.length === 0) {
         setAutoMsg('Aucun sujet généré. Vérifiez la configuration IA.')
@@ -107,12 +122,14 @@ export default function BlogAdmin() {
         return
       }
       let created = 0
+      let lastError = ''
       for (const [i, t] of topics.entries()) {
         setAutoMsg(`Génération ${i + 1}/${topics.length} : ${t.title}`)
-        const { data } = await supabase.functions.invoke('generate-blog-post', {
+        const { data, error: genErr } = await supabase.functions.invoke('generate-blog-post', {
           body: { title: t.title, keywords: t.keywords },
         })
-        if (!data?.success) continue
+        if (genErr) { lastError = await fnError(genErr); continue }
+        if (!data?.success) { lastError = data?.error ?? 'échec'; continue }
         const tags = (t.keywords || '').split(',').map(s => s.trim()).filter(Boolean)
         const base = {
           title: t.title,
@@ -132,10 +149,14 @@ export default function BlogAdmin() {
         }
         created++
       }
-      setAutoMsg(`${created} brouillon(s) créé(s).`)
+      setAutoMsg(
+        created > 0
+          ? `${created}/${topics.length} brouillon(s) créé(s).` + (lastError ? ` (dernière erreur : ${lastError})` : '')
+          : 'Aucun article créé. ' + (lastError || 'Vérifiez la configuration IA.'),
+      )
       await load()
-    } catch (_) {
-      setAutoMsg('Erreur lors de la génération automatique.')
+    } catch (e) {
+      setAutoMsg('Erreur : ' + (e instanceof Error ? e.message : String(e)))
     }
     setAutoBusy(false)
   }
