@@ -167,10 +167,8 @@ export default function FormationDetail() {
           {/* Sticky sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-dark-900 rounded-2xl p-6 sticky top-20 border border-white/5">
-              <div className="text-neutral-400 text-xs mb-1">Tarif indicatif</div>
-              {formation.prix && (
-                <div className="text-3xl font-bold text-white mb-1">{formation.prix.toLocaleString('fr-FR')} €</div>
-              )}
+              <div className="text-neutral-400 text-xs mb-1">Tarif</div>
+              <div className="text-3xl font-bold text-white mb-1">Nous consulter</div>
               <div className="text-teal-300 text-xs font-medium mb-6">Financement possible — OPCO, France Travail (AIF), Région, CSP…</div>
 
               <Link

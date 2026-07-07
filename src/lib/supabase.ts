@@ -95,6 +95,22 @@ export type PfiReport = {
   created_at: string
 }
 
+export type BugTicket = {
+  id: string
+  titre: string
+  description: string | null
+  categorie: string        // bug | amélioration | question
+  priorite: string         // basse | moyenne | haute | critique
+  statut: string           // nouveau | en_cours | résolu | fermé
+  page_url: string | null
+  screenshot_url: string | null
+  rapporteur: string | null
+  reponse: string | null
+  resolved_at: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type AdCampaign = {
   id: string
   titre: string

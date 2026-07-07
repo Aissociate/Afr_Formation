@@ -20,6 +20,7 @@ import AdminFormations from './pages/admin/FormationsAdmin'
 import AdminLeads from './pages/admin/LeadsAdmin'
 import AdminReports from './pages/admin/ReportsAdmin'
 import AdminAds from './pages/admin/AdsAdmin'
+import AdminDev from './pages/admin/DevAdmin'
 import AdminSettings from './pages/admin/SettingsAdmin'
 import AdminLogin from './pages/admin/Login'
 
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="leads" element={<AdminLeads />} />
           <Route path="reports" element={<AdminReports />} />
           <Route path="ads" element={<AdminAds />} />
+          <Route path="dev" element={<AdminDev />} />
           <Route path="parametres" element={<AdminSettings />} />
         </Route>
       </Routes>
