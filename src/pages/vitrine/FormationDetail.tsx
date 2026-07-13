@@ -49,6 +49,17 @@ export default function FormationDetail() {
     }
   }
 
+  // Pré-requis dérivés du niveau du diplôme visé : le niveau requis à l'entrée
+  // correspond au niveau juste en dessous du diplôme (ex. Titre Pro niveau 5 → niveau 4 requis).
+  const niveauMatch = formation.niveau?.match(/niveau\s*(\d)/i)
+  const diplomaLevel = niveauMatch ? parseInt(niveauMatch[1], 10) : null
+  const prereqLevel = diplomaLevel ? diplomaLevel - 1 : null
+  const prerequis = [
+    ...(prereqLevel ? [`Niveau ${prereqLevel} minimum`] : []),
+    'Connexion internet',
+    'Ordinateur',
+  ]
+
   return (
     <div className="bg-white">
       {/* Hero */}
@@ -150,6 +161,24 @@ export default function FormationDetail() {
               </div>
             </div>
 
+            {/* Pré-requis */}
+            <div>
+              <h2 className="text-xl font-bold text-neutral-900 mb-5 flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-brand-600" />
+                Pré-requis
+              </h2>
+              <ul className="space-y-3">
+                {prerequis.map((p, i) => (
+                  <li key={i} className="flex items-start gap-3 text-neutral-700 text-sm leading-relaxed">
+                    <span className="w-5 h-5 bg-brand-50 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle className="w-3 h-3 text-brand-600" />
+                    </span>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             {/* Certification */}
             <div className="flex items-center gap-4 p-5 bg-neutral-50 rounded-2xl border border-neutral-100">
               <img
@@ -168,7 +197,7 @@ export default function FormationDetail() {
           <div className="lg:col-span-1">
             <div className="bg-dark-900 rounded-2xl p-6 sticky top-20 border border-white/5">
               <div className="text-neutral-400 text-xs mb-1">Tarif</div>
-              <div className="text-3xl font-bold text-white mb-1">Nous consulter</div>
+              <div className="text-3xl font-bold text-white mb-1">Sur devis</div>
               <div className="text-teal-300 text-xs font-medium mb-6">Financement possible — OPCO, France Travail (AIF), Région, CSP…</div>
 
               <Link

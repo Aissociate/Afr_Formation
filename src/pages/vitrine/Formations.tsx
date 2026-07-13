@@ -180,7 +180,7 @@ export default function Formations() {
               to="/questionnaire"
               className="relative shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-brand-600/30"
             >
-              Obtenir mon PFI gratuit <ChevronRight className="w-4 h-4" />
+              Obtenir mon Plan de formation individualisé gratuit <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

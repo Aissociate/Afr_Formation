@@ -112,7 +112,7 @@ export default function Home() {
                 to="/questionnaire"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-brand-600/30 hover:-translate-y-0.5"
               >
-                Obtenir mon PFI gratuit <ArrowRight className="w-5 h-5" />
+                Obtenir mon Plan de formation individualisé gratuit <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
                 to="/formations"

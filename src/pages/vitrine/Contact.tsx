@@ -40,7 +40,7 @@ export default function Contact() {
               to="/questionnaire"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-brand-600/30"
             >
-              Obtenir mon PFI gratuit <ArrowRight className="w-4 h-4" />
+              Obtenir mon Plan de formation individualisé gratuit <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
