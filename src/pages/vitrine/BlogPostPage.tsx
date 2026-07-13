@@ -70,7 +70,7 @@ export default function BlogPostPage() {
           <h3 className="text-white font-bold text-xl mb-2">Prêt à vous former ?</h3>
           <p className="text-neutral-400 text-sm mb-5">Obtenez votre Plan de Formation Individualisé gratuit et découvrez comment financer votre formation.</p>
           <Link to="/questionnaire" className="inline-flex items-center gap-2 px-5 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-colors">
-            Obtenir mon PFI gratuit
+            Obtenir mon Plan de formation individualisé gratuit
           </Link>
         </div>
       </div>

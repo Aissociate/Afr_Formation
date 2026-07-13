@@ -80,7 +80,7 @@ export default function PublicLayout() {
               to="/questionnaire"
               className="ml-3 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-lg transition-all flex items-center gap-1.5 shadow-md shadow-brand-900/40"
             >
-              Mon PFI gratuit <ChevronRight className="w-4 h-4" />
+              Mon plan de formation gratuit <ChevronRight className="w-4 h-4" />
             </Link>
           </nav>
 
@@ -115,7 +115,7 @@ export default function PublicLayout() {
               to="/questionnaire"
               className="block mt-3 px-4 py-3 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-xl text-center transition-colors"
             >
-              Mon PFI gratuit
+              Mon plan de formation gratuit
             </Link>
           </div>
         )}
@@ -220,7 +220,7 @@ export default function PublicLayout() {
                     </li>
                   ))}
                   <li>
-                    <Link to="/questionnaire" className="hover:text-white transition-colors">Mon PFI gratuit</Link>
+                    <Link to="/questionnaire" className="hover:text-white transition-colors">Mon plan de formation gratuit</Link>
                   </li>
                 </ul>
               </div>
