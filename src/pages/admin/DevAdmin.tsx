@@ -69,12 +69,15 @@ export default function DevAdmin() {
   const [statutFilter, setStatutFilter] = useState('all')
   const [showForm, setShowForm] = useState(false)
   const [selected, setSelected] = useState<BugTicket | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const load = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('bug_tickets')
       .select('*')
       .order('created_at', { ascending: false })
+    if (error) setError(error.message)
+    else setError(null)
     setTickets(data ?? [])
     setLoading(false)
   }
@@ -98,14 +101,16 @@ export default function DevAdmin() {
 
   const handleStatutChange = async (id: string, statut: string) => {
     const patch: Partial<BugTicket> = { statut, updated_at: new Date().toISOString() }
-    if (statut === 'résolu') patch.resolved_at = new Date().toISOString()
-    await supabase.from('bug_tickets').update(patch).eq('id', id)
+    patch.resolved_at = statut === 'résolu' ? new Date().toISOString() : null
+    const { error } = await supabase.from('bug_tickets').update(patch).eq('id', id)
+    if (error) { setError(error.message); return }
     load()
   }
 
   const handleDelete = async (id: string) => {
     if (!confirm('Supprimer ce ticket ?')) return
-    await supabase.from('bug_tickets').delete().eq('id', id)
+    const { error } = await supabase.from('bug_tickets').delete().eq('id', id)
+    if (error) { setError(error.message); return }
     setSelected(null)
     load()
   }
@@ -124,6 +129,16 @@ export default function DevAdmin() {
           <Plus className="w-4 h-4" /> Signaler un bug
         </button>
       </div>
+
+      {error && (
+        <div className="flex items-start gap-2 p-4 bg-red-50 border border-red-100 rounded-2xl text-sm text-red-700">
+          <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+          <div>
+            <div className="font-semibold">Le ticketing n’a pas pu joindre la base.</div>
+            <div className="text-red-600/90 break-words">{error}</div>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -165,7 +180,9 @@ export default function DevAdmin() {
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center text-neutral-400 text-sm">
             <Bug className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            Aucun ticket. Cliquez sur « Signaler un bug » pour en créer un.
+            {error
+              ? 'Impossible de charger les tickets — voir le message ci-dessus.'
+              : 'Aucun ticket. Cliquez sur « Signaler un bug » pour en créer un.'}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -255,8 +272,17 @@ function TicketForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => 
     if (!titre.trim()) { setError('Le titre est obligatoire.'); return }
     setSaving(true); setError(null)
     try {
+      // Un upload en échec ne doit pas faire perdre le ticket : on le crée sans
+      // la capture et on le signale.
       let screenshot_url: string | null = null
-      if (file) screenshot_url = await uploadScreenshot(file)
+      let uploadFailed: string | null = null
+      if (file) {
+        try {
+          screenshot_url = await uploadScreenshot(file)
+        } catch (e) {
+          uploadFailed = e instanceof Error ? e.message : 'upload impossible'
+        }
+      }
       const { error } = await supabase.from('bug_tickets').insert({
         titre: titre.trim(),
         description: description.trim() || null,
@@ -266,6 +292,7 @@ function TicketForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => 
         screenshot_url,
       })
       if (error) throw error
+      if (uploadFailed) alert(`Ticket créé, mais la capture d’écran n’a pas pu être envoyée : ${uploadFailed}`)
       onSaved()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur lors de l’enregistrement.')
@@ -364,9 +391,10 @@ function TicketDetail({ ticket, onClose, onSaved, onDelete }: {
   const [reponse, setReponse] = useState(ticket.reponse ?? '')
   const [saving, setSaving] = useState(false)
   const [zoom, setZoom] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const save = async () => {
-    setSaving(true)
+    setSaving(true); setError(null)
     const patch: Partial<BugTicket> = {
       statut,
       reponse: reponse.trim() || null,
@@ -374,8 +402,9 @@ function TicketDetail({ ticket, onClose, onSaved, onDelete }: {
     }
     if (statut === 'résolu' && !ticket.resolved_at) patch.resolved_at = new Date().toISOString()
     if (statut !== 'résolu') patch.resolved_at = null
-    await supabase.from('bug_tickets').update(patch).eq('id', ticket.id)
+    const { error } = await supabase.from('bug_tickets').update(patch).eq('id', ticket.id)
     setSaving(false)
+    if (error) { setError(error.message); return }
     onSaved()
   }
 
@@ -442,6 +471,7 @@ function TicketDetail({ ticket, onClose, onSaved, onDelete }: {
                 </span>
               )}
             </div>
+            {error && <p className="text-sm text-red-600">{error}</p>}
           </div>
         </div>
 
