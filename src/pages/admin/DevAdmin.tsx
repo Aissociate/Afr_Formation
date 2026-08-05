@@ -48,6 +48,19 @@ const CAT_COLORS: Record<string, string> = {
 
 const statutLabel = (v: string) => STATUTS.find(s => s.value === v)?.label ?? v
 
+// Extrait un message lisible d'une erreur Supabase (PostgrestError) ou JS.
+// Les erreurs Supabase sont des objets simples { message, details, hint, code }
+// et NON des instances de Error — d'où le message générique masquant la cause.
+function errMessage(e: unknown, fallback = 'Erreur lors de l’enregistrement.'): string {
+  if (e && typeof e === 'object') {
+    const o = e as { message?: string; details?: string; hint?: string; code?: string }
+    const parts = [o.message, o.details, o.hint].filter(Boolean)
+    if (parts.length) return parts.join(' — ') + (o.code ? ` (code ${o.code})` : '')
+  }
+  if (e instanceof Error && e.message) return e.message
+  return fallback
+}
+
 // Upload d'une capture d'écran dans le bucket public `media`, préfixe bugs/.
 async function uploadScreenshot(file: File): Promise<string> {
   const ext = file.name.split('.').pop()?.toLowerCase() || 'png'
@@ -295,7 +308,7 @@ function TicketForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => 
       if (uploadFailed) alert(`Ticket créé, mais la capture d’écran n’a pas pu être envoyée : ${uploadFailed}`)
       onSaved()
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur lors de l’enregistrement.')
+      setError(errMessage(e))
       setSaving(false)
     }
   }
