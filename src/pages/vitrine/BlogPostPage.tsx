@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { supabase, type BlogPost } from '../../lib/supabase'
 import { formatDate } from '../../lib/utils'
 import { ArrowLeft, Calendar, User } from 'lucide-react'
+import { useSeo, truncate, SITE_URL, SITE_NAME } from '../../lib/seo'
 
 export default function BlogPostPage() {
   const { slug } = useParams()
@@ -14,6 +15,26 @@ export default function BlogPostPage() {
     supabase.from('blog_posts').select('*').eq('slug', slug).maybeSingle()
       .then(({ data }) => { setPost(data); setLoading(false) })
   }, [slug])
+
+  useSeo({
+    title: post ? (post.seo_title || post.title) : undefined,
+    description: post ? (post.seo_description || post.excerpt || (post.content ? truncate(post.content) : undefined)) : undefined,
+    path: `/blog/${slug ?? ''}`,
+    image: post?.cover_image,
+    type: 'article',
+    jsonLd: post && {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      description: post.seo_description || post.excerpt || undefined,
+      image: post.cover_image ?? undefined,
+      author: { '@type': 'Person', name: post.author },
+      publisher: { '@type': 'EducationalOrganization', name: SITE_NAME, url: SITE_URL },
+      datePublished: post.published_at ?? undefined,
+      dateModified: post.updated_at,
+      mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+    },
+  })
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center pt-16">

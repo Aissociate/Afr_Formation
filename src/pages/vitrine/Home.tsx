@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, CheckCircle, ChevronRight, Zap, Map, BookOpen, Award, Users, Star } from 'lucide-react'
 import { supabase, type Formation } from '../../lib/supabase'
 import { QUALIOPI_CERT_URL, QUALIOPI_LOGO } from '../../lib/config'
+import { useSeo, organizationJsonLd } from '../../lib/seo'
 
 const pillars = [
   {
@@ -74,6 +75,11 @@ const steps = [
 ]
 
 export default function Home() {
+  useSeo({
+    description: 'Organisme de formation et CFA à La Réunion. Titres professionnels certifiants 100% à distance, financements OPCO, France Travail (AIF), Région Réunion. Certifié Qualiopi.',
+    path: '/',
+    jsonLd: organizationJsonLd(),
+  })
   const [formations, setFormations] = useState<Formation[]>([])
 
   useEffect(() => {

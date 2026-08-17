@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { CheckCircle, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import { useSeo } from '../../lib/seo'
 
 type Step = {
   id: string
@@ -39,6 +40,11 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
 }
 
 export default function Questionnaire() {
+  useSeo({
+    title: 'Votre Plan de Formation Individualisé gratuit',
+    description: 'Répondez à quelques questions et recevez votre Plan de Formation Individualisé : formations adaptées à votre profil et financements mobilisables à La Réunion.',
+    path: '/questionnaire',
+  })
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState<FormData>({})
   const [submitting, setSubmitting] = useState(false)

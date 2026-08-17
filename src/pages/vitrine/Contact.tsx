@@ -2,8 +2,14 @@ import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Mail, Phone, MapPin, Send, CheckCircle, Clock, ArrowRight, ExternalLink } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useSeo } from '../../lib/seo'
 
 export default function Contact() {
+  useSeo({
+    title: 'Contact — Une question sur nos formations ?',
+    description: 'Contactez AFR OI CFA, organisme de formation à La Réunion : questions sur les formations, le financement ou votre projet professionnel. Réponse sous 24h.',
+    path: '/contact',
+  })
   const [form, setForm] = useState({ nom: '', email: '', telephone: '', message: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)

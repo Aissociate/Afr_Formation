@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { supabase, type Formation } from '../../lib/supabase'
 import { Clock, CheckCircle, ArrowLeft, ChevronRight, Award, Users, BookOpen, Laptop } from 'lucide-react'
+import { useSeo, truncate, SITE_URL, SITE_NAME } from '../../lib/seo'
 
 const IMG_MAP: Record<string, string> = {
   'Commerce, Vente & Distribution':       'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -22,6 +23,27 @@ export default function FormationDetail() {
     supabase.from('formations').select('*').eq('slug', slug).maybeSingle()
       .then(({ data }) => { setFormation(data); setLoading(false) })
   }, [slug])
+
+  useSeo({
+    title: formation ? `${formation.title} — Formation à distance à La Réunion` : undefined,
+    description: formation?.description ? truncate(formation.description) : undefined,
+    path: `/formations/${slug ?? ''}`,
+    image: formation?.image_url,
+    jsonLd: formation && {
+      '@context': 'https://schema.org',
+      '@type': 'Course',
+      name: formation.title,
+      description: formation.description ?? undefined,
+      url: `${SITE_URL}/formations/${formation.slug}`,
+      provider: { '@type': 'EducationalOrganization', name: SITE_NAME, url: SITE_URL },
+      educationalCredentialAwarded: `Titre Professionnel — ${formation.niveau}`,
+      hasCourseInstance: {
+        '@type': 'CourseInstance',
+        courseMode: 'online',
+        location: { '@type': 'VirtualLocation', url: SITE_URL },
+      },
+    },
+  })
 
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center pt-16">

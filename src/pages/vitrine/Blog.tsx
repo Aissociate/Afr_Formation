@@ -3,8 +3,14 @@ import { Link } from 'react-router-dom'
 import { supabase, type BlogPost } from '../../lib/supabase'
 import { formatDate } from '../../lib/utils'
 import { ArrowRight } from 'lucide-react'
+import { useSeo } from '../../lib/seo'
 
 export default function Blog() {
+  useSeo({
+    title: 'Blog — Formation, financement et emploi à La Réunion',
+    description: 'Conseils et actualités : financer sa formation à La Réunion (OPCO, France Travail, Région), titres professionnels, reconversion, IA et numérique.',
+    path: '/blog',
+  })
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
 

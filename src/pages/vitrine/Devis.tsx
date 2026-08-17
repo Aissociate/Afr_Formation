@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, type Formation } from '../../lib/supabase'
 import { CheckCircle, Loader2, FileText, ArrowRight } from 'lucide-react'
+import { useSeo } from '../../lib/seo'
 
 type Form = {
   nom: string
@@ -29,6 +30,11 @@ const inputCls =
   'w-full px-4 py-3 bg-white border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 text-sm transition'
 
 export default function Devis() {
+  useSeo({
+    title: 'Demande de devis formation',
+    description: 'Demandez un devis personnalisé pour une formation AFR OI CFA : particulier ou entreprise, réponse rapide avec les options de financement adaptées.',
+    path: '/devis',
+  })
   const [form, setForm] = useState<Form>(EMPTY)
   const [formations, setFormations] = useState<Formation[]>([])
   const [submitting, setSubmitting] = useState(false)

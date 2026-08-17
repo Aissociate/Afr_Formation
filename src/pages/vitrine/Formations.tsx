@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase, type Formation } from '../../lib/supabase'
 import { Search, Clock, CheckCircle, ChevronRight, Award } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import { useSeo } from '../../lib/seo'
 
 const CATEGORIES = [
   'Toutes',
@@ -24,6 +25,11 @@ const IMG_MAP: Record<string, string> = {
 }
 
 export default function Formations() {
+  useSeo({
+    title: 'Formations certifiantes à distance à La Réunion',
+    description: 'Catalogue des titres professionnels AFR OI CFA : comptabilité, paie, RH, secrétariat, insertion, formation. 100% à distance, financement OPCO, France Travail, Région.',
+    path: '/formations',
+  })
   const [formations, setFormations] = useState<Formation[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
