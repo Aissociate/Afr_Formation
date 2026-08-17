@@ -137,6 +137,8 @@ async function main() {
   })
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
   await writeFile(path.join(DIST, 'sitemap.xml'), sitemap, 'utf-8')
+  // Copie committée dans public/ : un build sans pré-rendu (ex. Bolt) la sert quand même.
+  await writeFile(path.join(DIST, '..', 'public', 'sitemap.xml'), sitemap, 'utf-8')
 
   console.log(`prerender: ${snapshots.size} pages écrites dans dist/ + sitemap.xml`)
 }
