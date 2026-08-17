@@ -50,7 +50,8 @@ export function truncate(text: string, max = 160): string {
 }
 
 export function useSeo({ title, description, path, image, type = 'website', jsonLd }: SeoProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE
+  // Pas de double suffixe si le titre fourni (ex. seo_title en base) contient déjà la marque.
+  const fullTitle = !title ? DEFAULT_TITLE : title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`
   const desc = description || DEFAULT_DESCRIPTION
   const canonical = SITE_URL + (path ?? window.location.pathname).replace(/\/+$/, '')
   const img = image || DEFAULT_IMAGE

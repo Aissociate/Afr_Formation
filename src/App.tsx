@@ -13,6 +13,8 @@ import BlogPostPage from './pages/vitrine/BlogPostPage'
 import Contact from './pages/vitrine/Contact'
 import Questionnaire from './pages/vitrine/Questionnaire'
 import Devis from './pages/vitrine/Devis'
+import MentionsLegales from './pages/vitrine/MentionsLegales'
+import PolitiqueConfidentialite from './pages/vitrine/PolitiqueConfidentialite'
 
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminBlog from './pages/admin/BlogAdmin'
@@ -62,6 +64,8 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/questionnaire" element={<Questionnaire />} />
           <Route path="/devis" element={<Devis />} />
+          <Route path="/mentions-legales" element={<MentionsLegales />} />
+          <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />
         </Route>
 
         {/* Admin */}

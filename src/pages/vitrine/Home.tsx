@@ -33,19 +33,19 @@ const domains = [
     title: 'Comptabilité & Gestion',
     formations: ['TP Secrétaire Comptable', 'TP Gestionnaire Comptable et Fiscal'],
     img: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=600',
-    slug: 'tp-gestionnaire-comptable-fiscal',
+    slug: 'gestionnaire-comptable-et-fiscal',
   },
   {
     title: 'Ressources Humaines & Paie',
     formations: ['TP Assistant(e) Ressources Humaines', 'TP Gestionnaire de Paie'],
     img: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600',
-    slug: 'tp-gestionnaire-de-paie',
+    slug: 'gestionnaire-paie',
   },
   {
     title: 'Formation & Insertion',
     formations: ['TP Formateur Professionnel d\'Adultes', 'TP Conseiller(ère) en Insertion Professionnelle'],
     img: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=600',
-    slug: 'tp-formateur-professionnel-adultes',
+    slug: 'formateur-professionnel-adultes',
   },
 ]
 

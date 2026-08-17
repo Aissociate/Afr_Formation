@@ -85,10 +85,16 @@ async function main() {
       }))
       const rootEmpty = await page.evaluate(() => !document.getElementById('root')?.childElementCount)
       if (rootEmpty) {
-        throw new Error(
-          `page ${route} rendue vide (#root sans contenu) — l'app React n'a pas monté. ` +
-          `Vérifier .env (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY) puis relancer le build.`
-        )
+        // Page principale vide = l'app n'a pas monté (ex. .env absent) : build rouge.
+        // Lien découvert vide = route inexistante (lien mort) : on avertit sans bloquer.
+        if (SEED_ROUTES.includes(route)) {
+          throw new Error(
+            `page ${route} rendue vide (#root sans contenu) — l'app React n'a pas monté. ` +
+            `Vérifier .env (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY) puis relancer le build.`
+          )
+        }
+        console.warn(`prerender: ${route} — page vide (route inexistante ?), ignorée`)
+        continue
       }
       snapshots.set(route, '<!DOCTYPE html>\n' + html)
       console.log(`prerender: ${route} (${html.length} octets)`)
