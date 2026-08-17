@@ -59,10 +59,19 @@ async function main() {
   if (!existsSync(path.join(DIST, 'index.html'))) {
     throw new Error('dist/index.html introuvable — lancer "vite build" avant le pré-rendu.')
   }
-  const { default: puppeteer } = await import('puppeteer')
+  let browser
+  try {
+    const { default: puppeteer } = await import('puppeteer')
+    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] })
+  } catch (err) {
+    // Environnement sans Chrome (ex. Bolt/WebContainer) : on déploie la SPA telle
+    // quelle plutôt que de casser le build. Le pré-rendu tournera sur Netlify CI
+    // ou en local.
+    console.warn('prerender: Puppeteer indisponible ici, étape sautée.\n', err.message)
+    return
+  }
   const { server, port } = await serveDist()
   const origin = `http://127.0.0.1:${port}`
-  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] })
 
   const queue = [...SEED_ROUTES]
   const seen = new Set(queue)
